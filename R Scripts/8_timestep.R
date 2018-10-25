@@ -3,7 +3,6 @@
 library(tidyverse)
 library(ggplot2)
 
-
 #use the site 50 ctd chla data because this is the response variable
 ## ie, I want to know the timestep of my response variable first
 data <- read.csv("./CTD/FCR_CTD_50_binned.csv")
