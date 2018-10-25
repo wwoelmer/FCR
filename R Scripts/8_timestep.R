@@ -30,34 +30,40 @@ abline(v =  seq(as.Date("2013-01-01"), as.Date("2017-12-31"), by = "week"))
 
 dates$Date <- as.Date(dates$Date)
 
+#the time period from Mar 1 to Oct 31 is chosen to represent the stratified period
+
 #look at 2013 alone
 thirteen <- dates[dates$Date  < "2013-12-31",]
-x <- thirteen[thirteen$Date > "2013-03-01" & thirteen$Date < "2013-09-30",]
+x <- thirteen[thirteen$Date > "2013-03-01" & thirteen$Date < "2013-10-31",]
 yes <- x[x$Y_N==1,]
 plot(yes)
 abline(v =  seq(as.Date("2013-01-01"), as.Date("2017-12-31"), by = "week"))
+title("timestep 2013")
 
 #look at 2014 alone
 fourteen <- dates[dates$Date  < "2014-12-31" & dates$Date > "2014-01-01",]
-y <- fourteen[fourteen$Date > "2014-03-01" & fourteen$Date < "2014-09-30",]
+y <- fourteen[fourteen$Date > "2014-03-01" & fourteen$Date < "2014-10-31",]
 yes.y <- y[y$Y_N==1,]
 plot(yes.y)
 abline(v =  seq(as.Date("2013-01-01"), as.Date("2017-12-31"), by = "week"))
+title("timestep 2014")
 
 #look at 2015 alone
 fifteen <- dates[dates$Date  < "2015-12-31" & dates$Date > "2015-01-01",]
-z <- fifteen[fifteen$Date > "2015-03-01" & fifteen$Date < "2015-09-30",]
+z <- fifteen[fifteen$Date > "2015-03-01" & fifteen$Date < "2015-10-31",]
 yes.z <- z[z$Y_N==1,]
 plot(yes.z)
 abline(v =  seq(as.Date("2013-01-01"), as.Date("2017-12-31"), by = "week"))
+title("timestep 2015")
+
 
 #look at 2016 alone
 sixteen <- dates[dates$Date  < "2016-12-31" & dates$Date > "2016-01-01",]
-a <- sixteen[sixteen$Date > "2016-03-01" & sixteen< "2016-09-30",]
+a <- sixteen[sixteen$Date > "2016-03-01" & sixteen< "2016-10-31",]
 yes.a <- a[a$Y_N==1,]
 plot(yes.a)
 abline(v =  seq(as.Date("2013-01-01"), as.Date("2017-12-31"), by = "week"))
-
+title("timestep 2016")
 
 
 
