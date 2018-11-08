@@ -48,11 +48,9 @@ neww <- interp %>%
   mutate(DO_mgL_interp = na.approx(DO_mgL, na.rm = FALSE, rule = 2, maxgap = 15)) %>%
   mutate(Chla_interp = na.approx(Chla_ugL, na.rm = FALSE, rule = 2, maxgap = 15)) %>%
   mutate(Turb_NTU_interp = na.approx(Turb_NTU, na.rm = FALSE, rule = 2, maxgap = 15)) %>%
-  mutate(SpCond_uScm_interp = na.approx(SpCond_calc, na.rm = FALSE, rule = 2, maxgap = 15)) %>%
-  select(Date:Depth, Temp_interp:SpCond_uScm_interp) #get rid of original columns without new interpolated values
+  mutate(SpCond_uScm_interp = na.approx(SpCond_calc, na.rm = FALSE, rule = 2, maxgap = 15))%>%
+  select(-(Temp_C:SpCond_calc)) #get rid of original columns without new interpolated values
 
-x <- colnames(interp)
-colnames(neww) <- x
 
 # subset out each year for the May-Oct stratified period and then put them together to have a dataset that includes only
 # the dates I want to model
@@ -62,6 +60,12 @@ data15 <- neww[neww$Date < "2015-11-01" & neww$Date >"2015-05-01",]
 data16 <- neww[neww$Date < "2016-11-01" & neww$Date >"2016-05-01",]
 data_all <- rbind(data13, data14, data15, data16)
 # data_all is our dataset that includes all of the CTD variables interpolated within the MAY-OCT 2013-2016 timeframe
+
+data_all <- data_all %>%
+  select(Temp_interp:SpCond_uScm_interp, everything())
+data_all <- data_all %>%
+  select(Date:Depth, everything())
+
 
 write.csv(data_all, "CTD_interpolated_MayOct13_16.csv", row.names = FALSE)
 
