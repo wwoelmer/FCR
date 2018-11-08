@@ -7,7 +7,7 @@ setwd("C:/Users/wwoel/Dropbox/FCR_TimeSeries")
 
 
 #read is YSI data
-light <- read.csv("YSI_PAR_SECCHI/YSI_PAR_profiles.csv")
+light <- read.csv("./YSI_PAR_SECCHI/YSI_PAR_profiles.csv")
 
 #subset YSI data to only PAR
 light <- light %>% select(DateTime, Depth_m, PAR_umolm2s)
