@@ -29,25 +29,23 @@ mean_flow <- wrt %>%
   summarise(mean_flow = mean(Flow_cms))
 
 
-# read in chemistry data to calculate nutrient loads
-chem <- read.csv("./water_chemistry/FCR_chemistry.csv")
-chem_inf <- chem[chem$Site==100,] #only data from inflow
-colnames(chem_inf)[3] <- "Date"
-chem_inf$Date <- as.Date(chem_inf$Date)
+# read in dataset which includes nutrient chemistry at inflow to calculate nutrient loads
+chem <- read.csv("./data_interpolated_MayOct13_16.csv")
+chem$Date <- as.Date(chem$Date)
 
 # add the residence times to the same dataframe as the nutrient data
-calc <- left_join(chem_inf, mean_flow)
+calc <- left_join(chem, mean_flow)
 calc$Date <- as.Date((calc$Date))
 
 # nutrient loads = inflow * nutrient concentration at inflow
 load <- calc %>%
   group_by(Date) %>%
-  mutate(TN_load = TN_ugL*mean_flow)%>%
-  mutate(TP_load = TP_ugL*mean_flow)%>%
-  mutate(NH4_load = NH4_ugL*mean_flow) %>%
-  mutate(NO3NO2_load = NO3NO2_ugL*mean_flow) %>%
-  mutate(SRP_load = SRP_ugL*mean_flow) %>%
-  mutate(DOC_load = DOC_mgL*mean_flow)
+  mutate(TN_load = TN_inf*mean_flow)%>%
+  mutate(TP_load = TP_inf*mean_flow)%>%
+  mutate(NH4_load = NH4_inf*mean_flow) %>%
+  mutate(NO3NO2_load = NO3NO2_inf*mean_flow) %>%
+  mutate(SRP_load = SRP_inf*mean_flow) %>%
+  mutate(DOC_load = DOC_inf*mean_flow)
 
 #subset just loads for some quick plots
 just_load <- load %>%
@@ -66,7 +64,7 @@ plot(just_load$Date, just_load$SRP_load)
 plot(just_load$Date, just_load$DOC_load)
 
 # merge together mean residence team, mean daily nutrient load calculations
-data <- left_join(just_load, mean_wrt)
+data <- left_join(load, mean_wrt)
 
 ###############################################################################################################################################
 ########## calculate other summary statistics about inflow data
@@ -87,4 +85,4 @@ flow <- inf %>%
 
 data2 <- left_join(data, temp_inf)
 data3 <- left_join(data2, flow)
-write.csv(data3, "inflow_loads_wrt.csv", row.names= FALSE)
+write.csv(data3, "weekly_plusinflow_data_2013_2016.csv", row.names= FALSE)
