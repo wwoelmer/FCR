@@ -87,24 +87,24 @@ data <- data %>% mutate(DOC_inf_log = log(DOC_inf))%>%
   select(-DOC_inf)
 #hist(data$DOC_inf_log)
 #hist(data$DOC_inf)
-#"Total_chlorophyll" LOG
-data <- data %>% mutate(Total_chlorophyll_log = log(Total_chlorophyll)) %>%
+#"Total_chlorophyll" LOG (add lowest value, then log)
+data <- data %>% mutate(Total_chlorophyll_log = log(Total_chlorophyll+0.32)) %>%
   select(-Total_chlorophyll)
 #hist(data$Total_chloro_log)
-#"Green_algae"     LOG
-data <- data %>% mutate(greens_log = log(Green_algae)) %>%
+#"Green_algae"     LOG (add lowest value, then log)
+data <- data %>% mutate(greens_log = log(Green_algae+0.06)) %>%
   select(-Green_algae)
 #hist(data$greens_log)
-#"Cyanobacteria"    LOG
-data <- data %>% mutate(cyano_log = log(Cyanobacteria))%>%
+#"Cyanobacteria"    LOG (add lowest value, then log)
+data <- data %>% mutate(cyano_log = log(Cyanobacteria+0.01))%>%
   select(-Cyanobacteria)
 #hist(data$cyano_log)
-#"Diatoms"         LOG 
-data <- data %>% mutate(diatoms_log = log(Diatoms))%>%
+#"Diatoms"         LOG (add lowest value, then log)
+data <- data %>% mutate(diatoms_log = log(Diatoms+0.08))%>%
   select(-Diatoms)
 #hist(data$diatoms_log)
-#"Cryptophyta"  LOG     
-data <- data %>% mutate(crypto_log = log(Cryptophyta)) %>%
+#"Cryptophyta"  LOG  (add lowest value, then log)   
+data <- data %>% mutate(crypto_log = log(Cryptophyta+0.04)) %>%
   select(-Cryptophyta)
 #hist(data$crypto_log)
 #"Kd"        OK
@@ -137,7 +137,7 @@ data <- data %>% mutate(TP_load_log = log(TP_load))%>%
 #hist(data$TP_load_log)
 #hist(data$TP_load)
 #"NH4_load"  LOG       
-data <- data %>% mutate(NH4_load_log = log(NH4_load))%>%
+data <- data %>% mutate(NH4_load_log = log(NH4_load+0.009))%>%
   select(-NH4_load)
       #hist(data$NH4_load_log)
       #hist(data$NH4_load)
@@ -183,7 +183,7 @@ data <- data %>% mutate(AirTemp_median_log = log(AirTemp_median))%>%
       #hist(data$AirTemp_median_log)
       #hist(data$AirTemp_median)
 #"Rain_sum"         LOG
-data <- data %>% mutate(Rain_sum_log = log(Rain_sum))%>%
+data <- data %>% mutate(Rain_sum_log = log(Rain_sum+0.0000480))%>%
   select(-Rain_sum)
     #hist(data$Rain_sum_log)
 #"RelHum_max"      LOG
@@ -219,6 +219,6 @@ data <- data %>% mutate(WindSpeed_median_log = log(WindSpeed_median))%>%
 # rearrange varibales
 data <- data %>% select(Date:Depth, Chla_sqrt, Chla_ARlag1_sqrt, Temp_C:SpCond_uScm, Turb_NTU_log, Kd, TP_log:DOC_inf_log, 
                         NO3NO2_inf:SRP_load, TN_TP_log:flow_max_log, flow_min:flow_median, mean_flow, Temp_inf_mean:Temp_inf_min,
-                        Total_chlorophyll_log:crypto_log, RelHum_max_log, AirTemp_max_log:windspeed_median_log, everything())
+                        Total_chlorophyll_log:crypto_log, RelHum_max_log, AirTemp_max_log:WindSpeed_median_log, everything())
 
 write.csv(data, "model_transformed_2013_2016.csv", row.names = FALSE)
