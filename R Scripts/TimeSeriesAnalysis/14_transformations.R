@@ -1,6 +1,8 @@
 library(tidyverse)
 
-data <- read.csv("model_lag_2013_2016.csv")
+data <- read.csv("variables_all_pluslag_2013_2016.csv")
+# get rid of non-driver data, including DOC_mgL because there is no data from this depth
+#data <- data %>% select(-(Date:Depth), -(week_julian:week_cum), -DOC_mgL)
 
 ################################################################################################################################################
 ############################ assess histograms of each variable to see if transformation is needed ######################################
@@ -11,12 +13,12 @@ for(i in 1:ncol(data)) {
 }
 
 #"Chla_ugL" SQUARE ROOT
-#data <- data %>% mutate(Chla_log = log(Chla_ugL))
-data <- data %>% mutate(Chla_sqrt = sqrt(Chla_ugL)) %>%
-  select(-Chla_ugL)
-      #hist(Chla_log)
-      #hist(Chla_ugL)
-      #hist(data$Chla_sqrt)
+data <- data %>% mutate(Chla_log = log(Chla_ugL))
+data <- data %>% mutate(Chla_ARlag1_log = log(Chla_ARlag1))
+data <- data %>% mutate(Chla_sqrt = sqrt(Chla_ugL)) %>% select(-Chla_ugL)
+      hist(data$Chla_log)
+      hist(data$Chla_ugL)
+      hist(data$Chla_sqrt)
 #"Chla_ARlag1" LOG     
 data <- data %>% mutate(Chla_ARlag1_sqrt = sqrt(Chla_ARlag1)) %>%
   select(-Chla_ARlag1)
@@ -48,7 +50,7 @@ data <- data %>% mutate(NH4_log = log(NH4_ugL))%>%
   select(-NH4_ugL)
 #hist(data$NH4_log)
 #"NO3NO2_ugL"     LOG
-data <- data %>% mutate(NO3NO2_log = log(NO3NO2_ugL)) %>%
+data <- data %>% mutate(NO3NO2_log = log(NO3NO2_ugL+0.3)) %>%
   select(-NO3NO2_ugL)
 #hist(data$NO3NO2_log)
 #"SRP_ugL"        LOG?
@@ -71,7 +73,7 @@ data <-  data %>% mutate(TN_inf_log = log(TN_inf)) %>%
 #hist(data$TN_inf_log)
 #hist(data$TN_inf)
 #"NH4_inf"         LOG
-data <- data %>% mutate(NH4_inf_log = log(NH4_inf)) %>%
+data <- data %>% mutate(NH4_inf_log = log(NH4_inf+1)) %>%
   select(-NH4_inf)
 #hist(data$NH4_inf_log)
 #hist(data$NH4_inf)
@@ -217,8 +219,14 @@ data <- data %>% mutate(WindSpeed_median_log = log(WindSpeed_median))%>%
 
 
 # rearrange varibales
-data <- data %>% select(Date:Depth, Chla_sqrt, Chla_ARlag1_sqrt, Temp_C:SpCond_uScm, Turb_NTU_log, Kd, TP_log:DOC_inf_log, 
+data_sqrt <- data %>% select(Date:Depth, Chla_sqrt, Chla_ARlag1_sqrt, Temp_C:SpCond_uScm, Turb_NTU_log, Kd, TP_log:DOC_inf_log, 
                         NO3NO2_inf:SRP_load, TN_TP_log:flow_max_log, flow_min:flow_median, mean_flow, Temp_inf_mean:Temp_inf_min,
-                        Total_chlorophyll_log:crypto_log, RelHum_max_log, AirTemp_max_log:WindSpeed_median_log, everything())
+                        RelHum_max_log, AirTemp_max_log:WindSpeed_median_log,everything())
+data_sqrt <- data_sqrt %>% select(-Chla_ARlag1_log, -Chla_log)
 
-write.csv(data, "model_transformed_2013_2016.csv", row.names = FALSE)
+data_log <- data %>% select(Date:Depth, Chla_log, Chla_ARlag1_log, Temp_C:SpCond_uScm, Turb_NTU_log, Kd, TP_log:DOC_inf_log, 
+                            NO3NO2_inf:SRP_load, TN_TP_log:flow_max_log, flow_min:flow_median, mean_flow, Temp_inf_mean:Temp_inf_min,
+                            RelHum_max_log, AirTemp_max_log:WindSpeed_median_log,everything())
+data_log <- data_log %>% select(-Chla_ARlag1_sqrt, -Chla_sqrt)
+write.csv(data_sqrt, "model_transformed_chlasqrt_2013_2016.csv", row.names = FALSE)
+write.csv(data_log, "model_transformed_chlalog_2013_2016.csv", row.names = FALSE)

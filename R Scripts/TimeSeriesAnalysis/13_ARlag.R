@@ -5,7 +5,7 @@
 library(astsa) # See note 1 below
 
 
-data <- read.csv("model_2013_2016.csv")
+data <- read.csv("variables_all_2013_2016.csv")
 
 plot(data$Chla_ugL, type="b") #time series plot of x with points marked as “o”
 lag1.plot(data$Chla_ugL,30) # Plots x versus lag 1 of x.
@@ -19,7 +19,7 @@ acf(ar1fit$residuals, xlim=c(1,18)) # ACF of the residuals for lags 1 to 18
 
 
 # subset to just surface chlorophyll data
-data2 <- data[data$Depth==0.1,]
+data2 <- data[data$Depth==1.0,]
 plot(data2$Chla_ugL, type="l") #time series plot of x with points marked as “o”
 lag1.plot(data2$Chla_ugL,30) # Plots x versus lag 1 of x.
 acf(data2$Chla_ugL, xlim=c(1,25)) # Plots the ACF of x for lags 1 to 19
@@ -36,4 +36,4 @@ data_surf <- left_join(data2, y)
 data_surf <- data_surf %>% 
   select(Date:Depth, Chla_ugL, Chla_ARlag1, everything())
 
-write.csv(data_surf, row.names = FALSE, "model_lag_2013_2016.csv")
+write.csv(data_surf, row.names = FALSE, "variables_all_pluslag_2013_2016.csv")
