@@ -28,8 +28,29 @@ mean_flow <- wrt %>%
   group_by(Date) %>%
   summarise(mean_flow = mean(Flow_cms))
 
+########## calculate other summary statistics about inflow data
 
-# read in dataset which includes nutrient chemistry at inflow to calculate nutrient loads
+#calculate mean daily temperature at inflow
+#calculate mean wrt/day
+temp_inf <- wrt %>%
+  mutate(Date = as.Date(DateTime, format="%Y-%m-%d")) %>%
+  group_by(Date) %>%
+  summarise(Temp_inf_mean = mean(Temp_C), Temp_inf_max = max(Temp_C), Temp_inf_min = min(Temp_C))
+
+# calculate min, max, and median for flow for each day
+flow <- inf %>%
+  mutate(Date = as.Date(DateTime, format="%Y-%m-%d")) %>%
+  group_by(Date) %>%
+  summarise(flow_max = max(Flow_cms), flow_min = min(Flow_cms), flow_median = median(Flow_cms))
+
+# put all inflow data into one dataframe and write to a csv
+infdata <- left_join(mean_wrt, mean_flow, by = "Date")
+infdata <- left_join(infdata, temp_inf, by = "Date")
+infdata <- left_join(infdata, flow, by = "Date")
+write.csv(infdata, "./Inflow/inflowcalcs_FCR.csv", row.names = FALSE)
+
+# read in dataset which includes interpolated nutrient chemistry at inflow 
+# to calculate nutrient loads
 chem <- read.csv("./data_interpolated_MayOct13_16.csv")
 chem$Date <- as.Date(chem$Date)
 
@@ -67,22 +88,8 @@ plot(just_load$Date, just_load$DOC_load)
 data <- left_join(load, mean_wrt)
 
 ###############################################################################################################################################
-########## calculate other summary statistics about inflow data
 
-#calculate mean daily temperature at inflow
-#calculate mean wrt/day
-temp_inf <- wrt %>%
-  mutate(Date = as.Date(DateTime, format="%Y-%m-%d")) %>%
-  group_by(Date) %>%
-  summarise(Temp_inf_mean = mean(Temp_C), Temp_inf_max = max(Temp_C), Temp_inf_min = min(Temp_C))
-
-# calculate min, max, and median for flow for each day
-flow <- inf %>%
-  mutate(Date = as.Date(DateTime, format="%Y-%m-%d")) %>%
-  group_by(Date) %>%
-  summarise(flow_max = max(Flow_cms), flow_min = min(Flow_cms), flow_median = median(Flow_cms))
-# mean flow was calculated above
 
 data2 <- left_join(data, temp_inf)
 data3 <- left_join(data2, flow)
-write.csv(data3, "weekly_plusinflow_data_2013_2016.csv", row.names= FALSE)
+write.csv(data3, "data_interpolated_plusinflowcalcs_MayOct13_16.csv", row.names= FALSE)
