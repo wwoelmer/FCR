@@ -1,8 +1,10 @@
 # script to select one date only from within each weekly timeframe for the entire 2013-2017 dataset
 
+library(tidyverse)
+
 # read in the dataset that includes only the timeframe of the model (May-Oct 2013-2016) and includes the weeks that have been
 # interpolated
-data <- read.csv("./CTD/CTD_interpolated_MayOct13_16.csv")
+data <- read.csv("data_interpolated_plusinflowcalcs_MayOct13_16.csv")
 data$Date <- as.Date(data$Date)
 
 # create a week number
@@ -37,7 +39,7 @@ timestep <- data %>%
   group_by(Depth, week_cum)%>%
   sample_n(1)
 
-write.csv(timestep, "weeks_2013_2016.csv", row.names = FALSE)  
+write.csv(timestep, "interpolated_weeks_2013_2016.csv", row.names = FALSE)  
 
 
 
