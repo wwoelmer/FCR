@@ -5,8 +5,8 @@ library(dplyr)
 library(tidyr)
 library(lubridate)
 
-setwd("C:/Users/wwoel/Dropbox/FCR_TimeSeries")
-ctd <- read.csv("CTD/CTD_FCR.csv")
+#setwd("C:/Users/wwoel/Dropbox/FCR_TimeSeries")
+ctd <- read.csv("./CTD/CTD_FCR.csv")
 
 
 # select CTD data for site 50 only
@@ -32,7 +32,7 @@ for(i in 1:length(site50$Depth_m)){
 layer = data.frame(site50)
 
 layer1 <- layer %>% group_by(Date) %>% slice(which.min(abs(as.numeric(Depth_m) - 0.1)))
-layer2 <- layer %>% group_by(Date) %>% slice(which.min(abs(as.numeric(Depth_m) - 0.8)))
+layer2 <- layer %>% group_by(Date) %>% slice(which.min(abs(as.numeric(Depth_m) - 1.0)))
 layer3 <- layer %>% group_by(Date) %>% slice(which.min(abs(as.numeric(Depth_m) - 1.6)))
 layer4 <- layer %>% group_by(Date) %>% slice(which.min(abs(as.numeric(Depth_m) - 2.8)))
 layer5 <- layer %>% group_by(Date) %>% slice(which.min(abs(as.numeric(Depth_m) - 3.8)))
@@ -48,7 +48,7 @@ layer14 <- layer %>% group_by(Date) %>% slice(which.min(abs(as.numeric(Depth_m) 
 
 ## replace name of depth with the selected layer depths for ease of merging later
 layer1$Depth_m <- 0.1 
-layer2$Depth_m <- 0.8
+layer2$Depth_m <- 1.0
 layer3$Depth_m <- 1.6 
 layer4$Depth_m <- 2.8 
 layer5$Depth_m <- 3.8 

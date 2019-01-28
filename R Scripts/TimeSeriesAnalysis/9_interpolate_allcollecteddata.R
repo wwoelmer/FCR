@@ -19,10 +19,9 @@ newdates <- as.Date(c( "2013-08-18", "2013-08-23", "2013-09-06", "2013-09-13", "
 add <- data.frame(matrix(nrow = length(newdates) , ncol = ncol(data)))
 colnames(add) <- colnames(data)
 add[1] <- newdates
-add$Site <- rep(50)
 
 # add in every depth for each date
-depths <- rep(c(0.1, 0.8, 1.6, 2.8, 3.8, 5.0, 5.2, 5.5, 5.8, 6.0, 6.2, 8.0, 9.0, 9.3), each = nrow(add))
+depths <- rep(c(0.1, 1.0, 1.6, 2.8, 3.8, 5.0, 5.2, 5.5, 5.8, 6.0, 6.2, 8.0, 9.0, 9.3), each = nrow(add))
 add <- cbind(depths, add)
 add$Depth <- depths
 add <- add%>% select(-depths)
@@ -112,16 +111,16 @@ write.csv(DOC, "./Interpolations/doc_interp.csv", row.names = FALSE)
 
 
 # interpolate fluoroprobe data
-fluora <- interp[interp$Date >"2013-12-10" & interp$Date < "2017-12-10",]
-fluora <- fluora %>%
-  group_by(Depth) %>%
-  mutate(total_chl_interp = na.approx(Total_chlorophyll, na.rm = FALSE, rule = 2, maxgap = 15)) %>%
-  mutate(greens_interp = na.approx(Green_algae, na.rm = FALSE, rule = 2, maxgap = 15)) %>%
-  mutate(cyanos_interp = na.approx(Cyanobacteria, na.rm = FALSE, rule = 2, maxgap = 15)) %>%
-  mutate(diatoms_interp = na.approx(Diatoms, na.rm = FALSE, rule = 2, maxgap = 15)) %>%
-  mutate(cryptos_interp = na.approx(Cryptophyta, na.rm = FALSE, rule = 2, maxgap = 15)) %>%
-  select(Date:Depth, total_chl_interp, greens_interp, cyanos_interp, diatoms_interp, cryptos_interp)
-write.csv(fluora, "./Interpolations/fluora_interp.csv", row.names = FALSE)
+#fluora <- interp[interp$Date >"2013-12-10" & interp$Date < "2017-12-10",]
+#fluora <- fluora %>%
+#  group_by(Depth) %>%
+#  mutate(total_chl_interp = na.approx(Total_chlorophyll, na.rm = FALSE, rule = 2, maxgap = 15)) %>%
+#  mutate(greens_interp = na.approx(Green_algae, na.rm = FALSE, rule = 2, maxgap = 15)) %>%
+#  mutate(cyanos_interp = na.approx(Cyanobacteria, na.rm = FALSE, rule = 2, maxgap = 15)) %>%
+#  mutate(diatoms_interp = na.approx(Diatoms, na.rm = FALSE, rule = 2, maxgap = 15)) %>%
+#  mutate(cryptos_interp = na.approx(Cryptophyta, na.rm = FALSE, rule = 2, maxgap = 15)) %>%
+#  select(Date:Depth, total_chl_interp, greens_interp, cyanos_interp, diatoms_interp, cryptos_interp)
+#write.csv(fluora, "./Interpolations/fluora_interp.csv", row.names = FALSE)
 
   
 #interpolate kd
@@ -130,7 +129,7 @@ kd <- kd %>%
   group_by(Date) %>%
   mutate(kd_interp = na.approx(Kd, na.rm = FALSE, rule = 2, maxgap = 15)) %>%
   select(Date:Depth, kd_interp)
-write.csv(kd, "./folder/kd_interp.csv", row.names = FALSE)
+write.csv(kd, "./Interpolations/kd_interp.csv", row.names = FALSE)
 # put each of the subsetted interpolated dataframes back together
 # did this in excel...couldn't figure out how to make R join the dataframes together properly
 # now read in new csv file
@@ -157,10 +156,9 @@ data_all <- rbind(data13, data14, data15, data16)
 # data_all is our dataset that includes all of the CTD variables interpolated within the MAY-OCT 2013-2016 timeframe
 
 # change column names to get rid of 'interp'
-colnames(data_all) <- c("Date" , "Site",  "Depth", "Temp_C",  "DO_mgL", "Chla_ugL", "Turb_NTU",  "SpCond_uScm", "TP_ugL",
+colnames(data_all) <- c("Date" , "Depth", "Temp_C",  "DO_mgL", "Chla_ugL", "Turb_NTU",  "SpCond_uScm", "TP_ugL",
                         "TN_ugL", "NH4_ugL", "NO3NO2_ugL", "SRP_ugL",  "DOC_mgL", "TP_inf", "TN_inf", "NH4_inf",   "NO3NO2_inf",  
-                        "SRP_inf", "DOC_inf", "Total_chlorophyll", "Green_algae", "Cyanobacteria" ,  "Diatoms", "Cryptophyta",
-                        "Kd", "TN_TP", "NH4NO3NO2_SRP", "TN_TP_inf" ,"NH4NO3_SRP_inf" )
+                        "DOC_inf", "SRP_inf","Kd", "TN_TP", "NH4NO3NO2_SRP", "TN_TP_inf" ,"NH4NO3_SRP_inf" )
 
 write.csv(data_all, "data_interpolated_MayOct13_16.csv", row.names = FALSE)
 

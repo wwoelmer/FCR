@@ -7,6 +7,7 @@ library(MuMIn)
 library(knitr)
 library(rsq)
 library(tidyverse)
+library(Metrics)
 
 #all data
 data <- read.csv("model_transformed_chlasqrt_2013_2016.csv")
@@ -53,17 +54,29 @@ mod3_tempC <- glm(Chla_sqrt~Chla_ARlag1_sqrt+ mean_flow + Temp_C + WindSpeed_max
 pred3_tempC <- predict(mod3_tempC, newdata=datapred)
 
 
-
-
-
-
 # plot predicted and observed for 2013 only
 plot(datapred$Date, (datapred$Chla_sqrt)^2, type = 'l', xlab = 'Date', ylab = 'Chla (ug/L)')
 #points(datapred$Date, (pred1_tempC)^2, col = 'red', type = 'l')
 points(datapred$Date, (pred2_tempC)^2, col = 'orange', type = 'l')
-#points(datapred$Date, (pred3_tempC)^2, col = 'purple', type = 'l')
+points(datapred$Date, (pred3_tempC)^2, col = 'purple', type = 'l')
 title('Predictable Variables, 2013 dataset')
 legend('topright', c("Observed", "Mod1"),cex = 0.75, col = c('black',  'orange'), lty = c(1,1), bty = 'n')
+
+
+
+# see how model does without inflow
+mod4_tempC <- glm(Chla_sqrt~Chla_ARlag1_sqrt + Temp_C + WindSpeed_max_log +ShortWave_mean,
+                  data = datapred, family = gaussian, na.action = "na.fail")
+pred4_tempC <- predict(mod4_tempC, newdata= datapred)
+
+plot(datapred$Date, (datapred$Chla_sqrt)^2, type = 'l', xlab = 'Date', ylab = 'Chla (ug/L)')
+points(datapred$Date, (pred4_tempC)^2, col = 'red', type = 'l')
+# calculate R2
+round((rsq(mod4_tempC, type = 'sse')), digits = 3)
+# calculate RMSE for each model
+rmse(pred4_tempC, datapred$Chla_sqrt)
+
+
 
 # plot predicted and observed for 2013-2016
 # first make predictions for the models for the entire dataset
@@ -102,6 +115,8 @@ legend('topright', c("Observed", "Mod1", "Mod2", "Mod3"),cex = 0.75, col = c('bl
 round((rsq(mod1_tempC, type = 'sse', adj = TRUE)), digits = 3)
 round((rsq(mod2_tempC, type = 'sse')), digits = 3)
 round((rsq(mod3_tempC, type = 'sse')), digits = 3)
+round((rsq(mod3_tempC_noAR, type = 'sse')), digits = 3)
+
 
 # calculate RMSE for each model
 rmse(pred1_tempC, datapred$Chla_sqrt)
@@ -201,7 +216,7 @@ data13$Date <- as.Date(data13$Date)
 data13 <- data13[data13$Date>"2013-06-20" & data13$Date<"2014-01-01",]
 
 # remove TP_load_log because there is not data the entire time
-model_2013 <- glm(Chla_sqrt~Chla_ARlag1_sqrt  + NO3NO2_log + SRP_log +  Temp_inf_mean +
+model_2013 <- glm(Chla_sqrt~Chla_ARlag1_sqrt + NO3NO2_log + SRP_log +  Temp_inf_mean +
                     RelHum_max_log + Rain_sum_log + WindSpeed_mean_log + ShortWave_mean,
                   data = data13, family = gaussian, na.action = 'na.fail')
 glm_2013 <- dredge(model_2013, rank = "AICc", fixed = "Chla_ARlag1_sqrt")

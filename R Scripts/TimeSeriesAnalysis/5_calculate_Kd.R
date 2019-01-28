@@ -3,10 +3,10 @@
 
 
 library(tidyverse)
-setwd("C:/Users/wwoel/Dropbox/FCR_TimeSeries")
+#setwd("C:/Users/wwoel/Dropbox/FCR_TimeSeries")
 
 
-#read is YSI data
+#read in YSI data
 light <- read.csv("./YSI_PAR_SECCHI/YSI_PAR_profiles.csv")
 
 #subset YSI data to only PAR
