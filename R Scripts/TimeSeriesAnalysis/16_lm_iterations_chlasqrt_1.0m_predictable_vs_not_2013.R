@@ -250,6 +250,13 @@ round((rsq(mod3_2013, type = 'sse')), digits = 3)
 
 rmse(pred1_2013, data13$Chla_sqrt)
 rmse(pred2_2013, data13$Chla_sqrt)
+rmse(pred3_2013, data13$Chla_sqrt)
+
+# use 2014 data to see how this model does outside 2013
+data14 <- data[data$Date > "2014-05-07" & data$Date < "2015-01-01",]
+pred1_on2014 <- predict.glm(mod1_2013, newdata = data14)
+plot(data14$Date, data14$Chla_sqrt, type = 'l')
+points(data14$Date, pred1_on2014, type = 'l', col = 'blue')
 
 # use this model to predict the entire dataset and compare to observed
 pred1_2013_alldata <- predict.glm(mod1_2013, newdata = data)
