@@ -213,35 +213,40 @@ var13 <- var13%>%select(Date, everything())
 # subset dataset by the column names in the correlation matrix
 data13 <- data[,colnames(var13)]
 data13$Date <- as.Date(data13$Date)
-data13 <- data13[data13$Date>"2013-06-20" & data13$Date<"2014-01-01",]
+data13 <- data13[data13$Date<"2014-01-01",]
 
-# remove TP_load_log because there is not data the entire time
-model_2013 <- glm(Chla_sqrt~Chla_ARlag1_sqrt + NO3NO2_log + SRP_log +  Temp_inf_mean +
+# remove TP_load_log and use mean_flow instead because there is not data the entire time for TP load
+model_2013 <- glm(Chla_sqrt~Chla_ARlag1_sqrt + NO3NO2_log + SRP_log +  Temp_inf_mean + mean_flow +
                     RelHum_max_log + Rain_sum_log + WindSpeed_mean_log + ShortWave_mean,
                   data = data13, family = gaussian, na.action = 'na.fail')
 glm_2013 <- dredge(model_2013, rank = "AICc", fixed = "Chla_ARlag1_sqrt")
 select_2013 <- subset(glm_2013, delta<2 )
 
 # build the two individual models selected from dredge
-mod1_2013 <- glm(Chla_sqrt~Chla_ARlag1_sqrt + SRP_log + ShortWave_mean,
+mod1_2013 <- glm(Chla_sqrt~Chla_ARlag1_sqrt + mean_flow + Temp_inf_mean + ShortWave_mean,
                  data = data13, family = gaussian, na.action = 'na.fail')
-mod2_2013 <- glm(Chla_sqrt~Chla_ARlag1_sqrt  +  SRP_log +  Temp_inf_mean,
+mod2_2013 <- glm(Chla_sqrt~Chla_ARlag1_sqrt  +  mean_flow + ShortWave_mean,
+                 data = data13, family = gaussian, na.action = 'na.fail')
+mod3_2013 <- glm(Chla_sqrt~Chla_ARlag1_sqrt  +  mean_flow + Temp_inf_mean,
                  data = data13, family = gaussian, na.action = 'na.fail')
 
 
 # make predictions with the models
 pred1_2013 <- predict(mod1_2013, newdata = data13)
 pred2_2013 <- predict(mod2_2013, newdata = data13)
+pred3_2013 <- predict(mod3_2013, newdata = data13)
 
 # plot the predictions
-plot(data13$Date, data13$Chla_sqrt, type = 'l')
-points(data13$Date, pred1_2013, col = 'red', type = 'l')
-points(data13$Date, pred2_2013, col = 'orange', type = 'l')
-title("Selected Models 2013 only")
+plot(data13$Date, (data13$Chla_sqrt)^2, type = 'l', xlab = 'Date', ylab = "Chlorophyll a (ug/L)", cex.main = 1.5)
+points(data13$Date, (pred1_2013)^2, col = 'red', type = 'l')
+points(data13$Date, (pred2_2013)^2, col = 'orange', type = 'l')
+points(data13$Date, (pred3_2013)^2, col = 'purple', type = 'l')
+title("2013", cex = 1.5)
 
 # calculate diagnostic statistics, R2 and RMSE
 round((rsq(mod1_2013, type = 'sse')), digits = 3)
 round((rsq(mod2_2013, type = 'sse')), digits = 3)
+round((rsq(mod3_2013, type = 'sse')), digits = 3)
 
 rmse(pred1_2013, data13$Chla_sqrt)
 rmse(pred2_2013, data13$Chla_sqrt)
