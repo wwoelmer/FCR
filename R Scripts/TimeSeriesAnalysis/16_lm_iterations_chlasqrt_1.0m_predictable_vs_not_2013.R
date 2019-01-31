@@ -216,13 +216,13 @@ data13$Date <- as.Date(data13$Date)
 data13 <- data13[data13$Date<"2014-01-01",]
 
 # remove TP_load_log and use mean_flow instead because there is not data the entire time for TP load
-model_2013 <- glm(Chla_sqrt~Chla_ARlag1_sqrt + NO3NO2_log + SRP_log +  Temp_inf_mean + mean_flow +
+model_2013 <- glm(Chla_sqrt~Chla_ARlag1_sqrt  +  Temp_inf_mean + mean_flow +
                     RelHum_max_log + Rain_sum_log + WindSpeed_mean_log + ShortWave_mean,
                   data = data13, family = gaussian, na.action = 'na.fail')
 glm_2013 <- dredge(model_2013, rank = "AICc", fixed = "Chla_ARlag1_sqrt")
 select_2013 <- subset(glm_2013, delta<2 )
 
-# build the two individual models selected from dredge
+# build the individual models selected from dredge (with the lowest degrees of freedom)
 mod1_2013 <- glm(Chla_sqrt~Chla_ARlag1_sqrt + mean_flow + Temp_inf_mean + ShortWave_mean,
                  data = data13, family = gaussian, na.action = 'na.fail')
 mod2_2013 <- glm(Chla_sqrt~Chla_ARlag1_sqrt  +  mean_flow + ShortWave_mean,
@@ -252,11 +252,18 @@ rmse(pred1_2013, data13$Chla_sqrt)
 rmse(pred2_2013, data13$Chla_sqrt)
 rmse(pred3_2013, data13$Chla_sqrt)
 
-# use 2014 data to see how this model does outside 2013
+# use 2014 data only to see how this model does outside 2013
 data14 <- data[data$Date > "2014-05-07" & data$Date < "2015-01-01",]
 pred1_on2014 <- predict.glm(mod1_2013, newdata = data14)
 plot(data14$Date, data14$Chla_sqrt, type = 'l')
 points(data14$Date, pred1_on2014, type = 'l', col = 'blue')
+
+# 2015 data only 
+data15 <- data[data$Date > "2015-01-01" & data$Date < "2016-01-01",]
+pred1_on2015 <- predict.glm(mod1_2013, newdata = data15)
+plot(data15$Date, data15$Chla_sqrt)
+points(data15$Date, pred1_on2015,  col = 'red')
+
 
 # use this model to predict the entire dataset and compare to observed
 pred1_2013_alldata <- predict.glm(mod1_2013, newdata = data)
