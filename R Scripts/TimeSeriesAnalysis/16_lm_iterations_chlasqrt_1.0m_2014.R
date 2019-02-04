@@ -55,8 +55,8 @@ pred2_2014_all <- predict(mod2_2014, newdata = dataall)
 
 # plot the predictions for the 2014 training dataset
 plot(data14$Date, (data14$Chla_sqrt)^2, type = 'l', xlab = "Date", ylab = 'Chlorophyll a (ug/L)', ylim = c(0,14))
-points(data14$Date, (pred1_2014)^2, col = 'purple', type = 'l')
-points(data14$Date, (pred2_2014)^2, col = 'slateblue', type = 'l')
+points(data14$Date, (pred1_2014)^2, col = 'firebrick2', type = 'l')
+#points(data14$Date, (pred2_2014)^2, col = 'slateblue', type = 'l')
 title("2014")
 
 # plot the predictions for the 2014 model on the entire dataset

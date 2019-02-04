@@ -60,9 +60,9 @@ pred3_2016_all <- predict(mod3_2016, newdata = dataall)
 
 # plot the predictions for the 2014 training dataset
 plot(data16$Date, (data16$Chla_sqrt)^2, type = 'l', xlab = "Date", ylab = "Chlorophyll a (ug/L)", ylim = c(0,14))
-points(data16$Date, (pred1_2016)^2, col = 'violetred3', type = 'l')
-points(data16$Date, (pred2_2016)^2, col = 'turquoise', type = 'l')
-points(data16$Date, (pred3_2016)^2, col = 'gold', type = 'l')
+#points(data16$Date, (pred1_2016)^2, col = 'violetred3', type = 'l')
+points(data16$Date, (pred2_2016)^2, col = 'blue', type = 'l')
+#points(data16$Date, (pred3_2016)^2, col = 'gold', type = 'l')
 title("2016")
 
 

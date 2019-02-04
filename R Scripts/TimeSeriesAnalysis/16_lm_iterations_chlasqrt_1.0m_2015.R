@@ -75,12 +75,12 @@ pred6_2015_all <- predict(mod6_2015, newdata = dataall)
 
 # plot the predictions for the 2014 training dataset
 plot(data15$Date, (data15$Chla_sqrt)^2, type = 'l', xlab = "Date", ylab = "Chlorophyll a (ug/L)", ylim = c(0,14))
-points(data15$Date, (pred1_2015)^2, col = 'red', type = 'l')
-points(data15$Date, (pred2_2015)^2, col = 'orange', type = 'l')
-points(data15$Date, (pred3_2015)^2, col = 'gold', type = 'l')
-points(data15$Date, (pred4_2015)^2, col = 'blue', type = 'l')
-points(data15$Date, (pred5_2015)^2, col = 'green', type = 'l')
-points(data15$Date, (pred6_2015)^2, col = 'purple', type = 'l')
+#points(data15$Date, (pred1_2015)^2, col = 'red', type = 'l')
+points(data15$Date, (pred2_2015)^2, col = 'turquoise2', type = 'l')
+#points(data15$Date, (pred3_2015)^2, col = 'gold', type = 'l')
+#points(data15$Date, (pred4_2015)^2, col = 'blue', type = 'l')
+#points(data15$Date, (pred5_2015)^2, col = 'green', type = 'l')
+#points(data15$Date, (pred6_2015)^2, col = 'purple', type = 'l')
 title("2015")
 
 
