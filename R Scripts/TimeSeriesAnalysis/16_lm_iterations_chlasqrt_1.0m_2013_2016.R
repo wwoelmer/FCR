@@ -62,6 +62,13 @@ points(data1316$Date, pred4_1316, col = 'blue', type = 'l')
 title("Selected models 2013-2016 dataset")
 
 
+plot(data1316$Chla_sqrt, type = 'l')
+points(pred1_1316, col = 'red', type = 'l')
+points(data1316$Date, pred2_1316, col = 'orange', type = 'l')
+points(data1316$Date, pred3_1316, col = 'gold', type = 'l')
+points(data1316$Date, pred4_1316, col = 'blue', type = 'l')
+title("Selected models 2013-2016 dataset")
+
 # calculate diagnostic statistics, R2 and RMSE
 round((rsq(mod1_1316, type = 'sse')), digits = 3)
 round((rsq(mod2_1316, type = 'sse')), digits = 3)
