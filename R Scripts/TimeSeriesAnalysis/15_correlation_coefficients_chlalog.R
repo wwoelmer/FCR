@@ -241,7 +241,7 @@ summary(tp)
 #########################################################################################################################################################
 ####################### 2013-2016 dataset #################################################
 
-data <- read.csv("model_transformed_2013_2016.csv")
+data <- read.csv("./model_transformed_chlasqrt_2013_2016.csv")
 attach(data)
 
 # create a function for ease in comparing variables
@@ -252,6 +252,28 @@ compare <- function(variab){
   summary(x)
 }
 
+# looking at predictable variables only
+compare(mean_flow)
+compare(flow_max_log)
+compare(flow_median)
+compare(flow_min)
+
+compare(Temp_C)
+compare(AirTemp_mean_log)
+
+compare(WindSpeed_max_log)
+compare(WindSpeed_mean_log)
+compare(WindSpeed_median_log)
+
+compare(AirTemp_max_log)
+compare(ShortWave_max)
+compare(ShortWave_mean)
+compare(RelHum_max_log)
+compare(RelHum_mean)
+compare(AirTemp_median_log)
+
+compare(RelHum_median)
+compare(Rain_sum_log)
 
 # TP_inf_log vs. TN_inf_log
 plot(TP_inf_log, Chla_sqrt)
