@@ -1,0 +1,55 @@
+library(MuMIn)
+library(knitr)
+library(rsq)
+library(tidyverse)
+library(Metrics)
+
+#all data
+data <- read.csv("model_transformed_chlasqrt_2013_2016.csv")
+
+##################################################################################################################################################3
+####################################2016 dataset, selected variables #################################
+# read in correlation matrix for selected predictable variable names
+varall <- read.csv("./correlation matrices/chlasqrt_1.0m/correlation_matrix_chlasqrt_2013_2016_selected_predictable.csv")
+# insert an empty date column so that it can be matched with the dataset
+varall$Date <- NA
+varall <- varall%>%select(Date, everything())
+# subset dataset by the column names in the correlation matrix
+dataall <- data[,colnames(varall)]
+dataall$Date <- as.Date(dataall$Date)
+dataall <- dataall[dataall$Date>"2013-05-09",]
+
+# build a global model with all possible predictor variables
+model_1316 <- glm(Chla_sqrt~Chla_ARlag1_sqrt  +  mean_flow + AirTemp_mean_log + WindSpeed_mean_log + 
+                    +RelHum_median + ShortWave_mean,
+                  data = dataall, family = gaussian, na.action = 'na.fail')
+glm_1316 <- dredge(model_1316, rank = "AICc", fixed = "Chla_ARlag1_sqrt")
+select_1316 <- subset(glm_1316, delta<2 )
+
+# now build selected models
+mod1_1316 <- glm(Chla_sqrt~Chla_ARlag1_sqrt + mean_flow +ShortWave_mean, 
+                 data = dataall, family = gaussian, na.action = 'na.fail')
+mod2_1316 <- glm(Chla_sqrt~Chla_ARlag1_sqrt + mean_flow + AirTemp_mean_log + ShortWave_mean, 
+                 data = dataall, family = gaussian, na.action = 'na.fail')
+mod3_1316 <- glm(Chla_sqrt~Chla_ARlag1_sqrt + mean_flow + WindSpeed_mean_log + ShortWave_mean, 
+                 data = dataall, family = gaussian, na.action = 'na.fail')
+
+# make predictions
+pred1_1316 <- predict(mod1_1316, newdata = dataall)
+pred2_1316 <- predict(mod2_1316, newdata = dataall)
+pred3_1316 <- predict(mod3_1316, newdata = dataall)
+
+# plot the predictions for the entire dataset
+plot(dataall$Date, dataall$Chla_sqrt, type = 'l')
+points(dataall$Date, pred1_1316, col = 'red', type = 'l')
+points(dataall$Date, pred2_1316, col = 'orange', type = 'l')
+points(dataall$Date, pred3_1316, col = 'gold', type = 'l')
+
+# calculate R2 and RMSE
+round((rsq(mod1_1316, type = 'sse')), digits = 3)
+round((rsq(mod2_1316, type = 'sse')), digits = 3)
+round((rsq(mod3_1316, type = 'sse')), digits = 3)
+
+rmse(pred1_1316, dataall$Chla_sqrt)
+rmse(pred2_1316, dataall$Chla_sqrt)
+rmse(pred3_1316, dataall$Chla_sqrt)
