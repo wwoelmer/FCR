@@ -239,8 +239,8 @@ pred3_2013 <- predict(mod3_2013, newdata = data13)
 # plot the predictions
 plot(data13$Date, (data13$Chla_sqrt)^2, type = 'l', xlab = 'Date', ylim = c(0,14),ylab = "Chlorophyll a (ug/L)", cex.main = 1.5)
 points(data13$Date, (pred1_2013)^2, col = 'red', type = 'l')
-points(data13$Date, (pred2_2013)^2, col = 'orange', type = 'l')
-points(data13$Date, (pred3_2013)^2, col = 'purple', type = 'l')
+#points(data13$Date, (pred2_2013)^2, col = 'orange', type = 'l')
+#points(data13$Date, (pred3_2013)^2, col = 'purple', type = 'l')
 title("2013", cex = 1.5)
 
 # calculate diagnostic statistics, R2 and RMSE
