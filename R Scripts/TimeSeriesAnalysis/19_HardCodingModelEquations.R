@@ -150,5 +150,5 @@ points(data$predictable3, type = 'l', col = 'purple')
 
 round((rsq(mod1_1316, type = 'sse')), digits = 3)
 
-R2 <- 1 - (sum((data$Chla_sqrt-data$predictable )^2)/sum((data$Chla_sqrt-mean(data$Chla_sqrt))^2))
+R2 <- 1 - (sum((data$Chla_sqrt-data$predictable1 )^2)/sum((data$Chla_sqrt-mean(data$Chla_sqrt))^2))
 my_RMSE<-sqrt(mean((data$predictable - data$Chla_sqrt)^2))
