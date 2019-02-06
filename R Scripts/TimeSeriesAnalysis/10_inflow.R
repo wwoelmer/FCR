@@ -7,6 +7,7 @@ inf <- read.csv("./Inflow/inflow_interpolation_2013_2017.csv")
  ##### # calculate residence time: volume in m3? / (flow in m3/s * 60s *60min * 24 hours ), unit: # of days
 wrt <- inf %>%
   mutate(wtr_res_time = 3.1E5/(Flow_cms*60*60*24))
+plot(wrt$wtr_res_time)
 #
 
 
