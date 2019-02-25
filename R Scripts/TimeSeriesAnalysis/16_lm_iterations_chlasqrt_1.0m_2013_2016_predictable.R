@@ -18,6 +18,9 @@ varall <- varall%>%select(Date, everything())
 dataall <- data[,colnames(varall)]
 dataall$Date <- as.Date(dataall$Date)
 dataall <- dataall[dataall$Date>"2013-05-09",]
+# because rmse retains native units, create a chl column that is not square rooted
+dataall <- dataall %>% mutate(Chla_ugL = (Chla_sqrt)^2)
+
 
 # build a global model with all possible predictor variables
 model_1316 <- glm(Chla_sqrt~Chla_ARlag1_sqrt  +  mean_flow + AirTemp_mean_log + WindSpeed_mean_log + 
@@ -40,8 +43,8 @@ pred2_1316 <- predict(mod2_1316, newdata = dataall)
 pred3_1316 <- predict(mod3_1316, newdata = dataall)
 
 # plot the predictions for the entire dataset
-plot(dataall$Date, dataall$Chla_sqrt, type = 'l')
-points(dataall$Date, pred1_1316, col = 'red', type = 'l')
+plot(dataall$Date, dataall$Chla_ugL, type = 'l')
+points(dataall$Date, (pred1_1316)^2, col = 'red', type = 'l')
 points(dataall$Date, pred2_1316, col = 'orange', type = 'l')
 points(dataall$Date, pred3_1316, col = 'gold', type = 'l')
 
@@ -50,6 +53,8 @@ round((rsq(mod1_1316, type = 'sse')), digits = 3)
 round((rsq(mod2_1316, type = 'sse')), digits = 3)
 round((rsq(mod3_1316, type = 'sse')), digits = 3)
 
-rmse(pred1_1316, dataall$Chla_sqrt)
+rmse((pred1_1316)^2, dataall$Chla_ugL)
+rmse((pred1_1316)^2, (dataall$Chla_sqrt)^2)
 rmse(pred2_1316, dataall$Chla_sqrt)
 rmse(pred3_1316, dataall$Chla_sqrt)
+
