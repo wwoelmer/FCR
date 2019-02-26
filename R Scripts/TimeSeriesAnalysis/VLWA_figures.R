@@ -1,4 +1,4 @@
-library(ggplot2)
+library(tidyverse)
 
 data <- read.csv("model_transformed_chlasqrt_2013_2016.csv")
 data$Date <- as.Date(data$Date)
@@ -35,3 +35,26 @@ points(dataall$Date, (pred1_1316)^2, col = 'red', type = 'l')
 
 # subset each of the years so the plot is still 2013-2016 but each line stops in october
 # and doesn't connect to the may of the following year??
+
+a <- data[data$Date < "2013-12-01",]
+a$Date <- as.Date(a$Date)
+
+b <- data[data$Date < "2014-12-01" & data$Date > "2013-12-01",]
+b$Date <- as.Date(b$Date)
+
+c <- data[data$Date < "2015-12-01" & data$Date > "2014-12-01",]
+c$Date <- as.Date(c$Date)
+
+d <- data[data$Date < "2016-12-01" & data$Date > "2015-12-01",]
+d$Date <- as.Date(d$Date)
+
+plot(dataall$Date, (dataall$Chla_sqrt)^2, type = 'n', xlab = "Date", ylab = "Chlorophyll a (ug/L)", xlim = c(as.Date("2013-01-01"), as.Date("2016-12-31")))
+points(a$Date, (a$Chla_sqrt)^2, lwd = 2, type = 'l')
+points(b$Date, (b$Chla_sqrt)^2, lwd = 2, type = 'l')
+points(c$Date, (c$Chla_sqrt)^2, lwd = 2, type = 'l')
+points(d$Date, (d$Chla_sqrt)^2, lwd = 2, type = 'l')
+points(dataall$Date, (pred1_1316)^2, col = 'orangered3', type = 'l', lwd = 2)
+legend('topleft', c('Observed', 'ARIMA Modeled'), lty = c(1,1), col = c('black', 'orangered3'), bty = 'n')
+
+
+

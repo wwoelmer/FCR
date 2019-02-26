@@ -14,7 +14,7 @@ met2 <- met2[met2$time > "2018-01-01 18:00:00",]
 metall <- rbind(met1, met2)
 plot(metall$time, metall$ShortWave)
 
-write.csv(metall, "./MET/FCR_GLM_NLDAS_010113_123118.csv", row.names = FALSE)
+#write.csv(metall, "./MET/FCR_GLM_NLDAS_010113_123118.csv", row.names = FALSE)
 
 met_summ <- metall %>%                                                 # start with the raw data
   mutate(Date = as.Date(time, format="%Y-%m-%d hh:mm:ss")) %>% # create a column of just the date
@@ -26,4 +26,4 @@ met_summ <- metall %>%                                                 # start w
 
 # subset out 2018 only for the validation dataset
 met_18 <- met_summ[met_summ$Date>"2017-12-31",]
-write.csv(met_18, "./MET/NLDAS_2018_daily.csv", row.names = FALSE)
+#write.csv(met_18, "./MET/NLDAS_2018_daily.csv", row.names = FALSE)
