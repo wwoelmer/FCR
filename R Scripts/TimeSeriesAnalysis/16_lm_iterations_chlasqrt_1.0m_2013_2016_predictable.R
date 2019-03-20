@@ -58,3 +58,11 @@ rmse((pred1_1316)^2, (dataall$Chla_sqrt)^2)
 rmse(pred2_1316, dataall$Chla_sqrt)
 rmse(pred3_1316, dataall$Chla_sqrt)
 
+
+# work with the bias calculations
+bias_arima <- sd((pred1_1316^2))/sd(dataall$Chla_ugL) # non-biased estimate = 1
+bias(dataall$Chla_ugL, (pred1_1316)^2)
+mean(dataall$Chla_ugL-(pred1_1316^2))
+actual <- c(1, 2, 3, 4)
+predicted <- c(1, 2, 3, 4)
+bias(actual, predicted)

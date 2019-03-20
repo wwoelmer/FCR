@@ -7,7 +7,6 @@ library(Metrics)
 # read in driver data for the model (2018 inflow, met, and chla data)
 met <- read.csv("./MET/NLDAS_2018_daily.csv")
 met$Date <- as.Date(met$Date)
-# why is there missing NLDAS data from  Sep30 to Oct15????
 
 inflow <- read.csv("./Inflow/inflow_2013_2018.csv")
 
@@ -38,8 +37,6 @@ data$Chla_ARlag1_sqrt <- sqrt(data$Chla_lag1)
 
 # now the model equation!!!!!!
 data <- data %>% mutate(pred = 1.65 + 0.45*Chla_ARlag1_sqrt - 3.05*mean_flow - 0.0025*ShortWave_mean)
-# subset the dataframe to incidences before Oct 2 because this is where there is no NLDAS data
-data_plot <- data[data$Date<"2018-10-02",]
 
 # also make a prediction using the 13-16 lm
 data1316 <- read.csv("model_transformed_chlasqrt_2013_2016.csv")
@@ -48,30 +45,33 @@ data1316 <- data1316[data1316$Date>"2013-05-09",]
 
 mod1_1316 <- glm(Chla_sqrt~Chla_ARlag1_sqrt + mean_flow +ShortWave_mean, 
                  data = data1316, family = gaussian, na.action = 'na.fail')
-pred1_1316 <- predict(mod1_1316, newdata = data_plot)
+pred1_1316 <- predict(mod1_1316, newdata = data)
 
 
 plot(data$pred, data$Chla_sqrt)
 abline(0, 1)
-plot(data_plot$pred, data_plot$Chla_sqrt) #this should be the same thing as data$pred but with fewer datapoints
+plot(pred1_1316, data$Chla_sqrt)
 
-plot(data_plot$pred, pred1_1316)
+plot(data$pred, pred1_1316)
 abline(0,1)
-plot(pred1_1316, data_plot$Chla_sqrt)
 
-plot(data_plot$Date, (data_plot$Chla_sqrt)^2, type = 'l', lwd = 2, xlab = "Date", ylab = 'Chlorophyll a (ug/L)')
-points(data_plot$Date, (data_plot$pred)^2, col = 'orangered3', type = 'l', lwd = 2)
+plot(data$Date, (data$Chla_sqrt)^2, type = 'l', lwd = 2, xlab = "Date", ylab = 'Chlorophyll a (ug/L)')
+points(data$Date, (data$pred)^2, col = 'orangered3', type = 'l', lwd = 2)
 legend('topleft', c('Observed', 'ARIMA Modeled'), lty = c(1,1), col = c('black', 'orangered3'), bty = 'n')
 #points(data_plot$Date, (pred1_1316)^2, col = 'purple', type = 'l')
 #points(data$Date, data$Chla_ugL, col = 'purple')
-
+par(mfrow=c(2,2))
+plot(data$Date, (data$Chla_sqrt)^2, type = 'l', lwd = 2, xlab = "Date", ylab = 'Chlorophyll a (ug/L)')
+points(data$Date, (data$pred)^2, col = 'orangered3', type = 'l', lwd = 2)
+plot(data$Date, data$ShortWave_mean, col = 'red')
+plot(data$Date, data$mean_flow, col = 'blue')
 plot(data$Date, data$pred, type = 'l')
-
+plot(data$Date, data$Chla_lag1, col = 'green')
 # use these to calculate r2 and rmse
 round((rsq(mod1_1316, type = 'sse')), digits = 3)
-rmse((pred1_1316)^2, data_plot$Chla_ugL)
+rmse((pred1_1316)^2, data$Chla_ugL)
 
 # subset these two so there are no NA's/they are the same length
 pred1_1316_narm <- pred1_1316[2:39]
-data_rmse <- data_plot[2:39,]
+data_rmse <- data[2:39,]
 rmse((pred1_1316_narm)^2, data_rmse$Chla_ugL)
