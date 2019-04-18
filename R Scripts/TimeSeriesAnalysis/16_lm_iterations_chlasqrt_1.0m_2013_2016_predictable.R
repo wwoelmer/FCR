@@ -32,6 +32,7 @@ select_1316 <- subset(glm_1316, delta<2 )
 # now build selected models
 mod1_1316 <- glm(Chla_sqrt~Chla_ARlag1_sqrt + mean_flow +ShortWave_mean, 
                  data = dataall, family = gaussian, na.action = 'na.fail')
+summary(mod1_1316)
 mod2_1316 <- glm(Chla_sqrt~Chla_ARlag1_sqrt + mean_flow + AirTemp_mean_log + ShortWave_mean, 
                  data = dataall, family = gaussian, na.action = 'na.fail')
 mod3_1316 <- glm(Chla_sqrt~Chla_ARlag1_sqrt + mean_flow + WindSpeed_mean_log + ShortWave_mean, 
@@ -66,3 +67,8 @@ mean(dataall$Chla_ugL-(pred1_1316^2))
 actual <- c(1, 2, 3, 4)
 predicted <- c(1, 2, 3, 4)
 bias(actual, predicted)
+
+par(mfrow = c(2,2))
+plot((dataall$Chla_ARlag1_sqrt)^2, (dataall$Chla_sqrt)^2, xlab = "Chla t-1 (ug/L)", ylab ="Chla (ug/L)" )
+plot(dataall$mean_flow, dataall$Chla_ugL, xlab = "Mean flow (m3/s)", ylab = "Chla (ug/L)")
+plot(dataall$ShortWave_mean, dataall$Chla_ugL, xlab = "Mean Shortwave (W/m2)", ylab = "Chla (ug/L)")
